@@ -14,4 +14,5 @@ export async function createLink(
     name: data.name,
     destinations: JSON.stringify(data.destinations),
   });
+  return id;
 }
