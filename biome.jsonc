@@ -5,6 +5,12 @@
     "rules": {
       "style": {
         "noNonNullAssertion": "off"
+      },
+      "suspicious": {
+        "useAwait": "off"
+      },
+      "correctness": {
+        "noEmptyPattern": "off"
       }
     }
   }
