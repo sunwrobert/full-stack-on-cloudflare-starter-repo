@@ -9,7 +9,9 @@ let db: ReturnType<typeof drizzle>;
  * @returns
  */
 export function initDatabase(bindingDb: D1Database) {
-  if (db) return;
+  if (db) {
+    return;
+  }
   db = drizzle(bindingDb);
 }
 
