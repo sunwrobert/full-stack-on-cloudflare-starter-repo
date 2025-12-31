@@ -14,5 +14,12 @@
       "database_id": "e6b3fe79-b988-4027-a05c-7bceb31eb883",
       "remote": true
     }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "GEO_CACHE",
+      "id": "ed924cd1b16f49619224ea08fb04cde7",
+      "remote": true
+    }
   ]
 }
