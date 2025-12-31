@@ -12,7 +12,7 @@ export async function addEvaluation(data: {
 }) {
   const db = getDb();
 
-  await db.insert(destinationEvaluations).values({
+  const id = await db.insert(destinationEvaluations).values({
     id: data.evaluationId,
     linkId: data.linkId,
     accountId: data.accountId,
@@ -20,6 +20,8 @@ export async function addEvaluation(data: {
     status: data.status,
     reason: data.reason,
   });
+
+  return id;
 }
 
 export async function getNotAvailableEvaluations(accountId: string) {
