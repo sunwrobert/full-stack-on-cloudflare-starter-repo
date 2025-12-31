@@ -11,6 +11,9 @@
       },
       "correctness": {
         "noEmptyPattern": "off"
+      },
+      "performance": {
+        "noBarrelFile": "off"
       }
     }
   }
