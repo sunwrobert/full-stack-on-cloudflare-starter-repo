@@ -1,0 +1,154 @@
+name: Preview Deployment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  pull_request_target:
+    types: [closed]
+
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-preview:
+    if: github.event.action != 'closed'
+    name: Deploy Preview
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        run: pnpm run build-package
+
+      - name: Deploy data-service preview
+        id: deploy-data-service
+        working-directory: apps/data-service
+        run: |
+          OUTPUT=$(wrangler deploy --env stage --name data-service-pr-${{ github.event.pull_request.number }} 2>&1)
+          echo "$OUTPUT"
+          # Extract URL from wrangler output (format: https://worker-name.workers.dev)
+          URL=$(echo "$OUTPUT" | grep -oP 'https://[^\s]+\.workers\.dev' | head -1 || echo "")
+          if [ -z "$URL" ]; then
+            # Fallback: construct URL manually
+            URL="https://data-service-pr-${{ github.event.pull_request.number }}.workers.dev"
+          fi
+          echo "url=$URL" >> $GITHUB_OUTPUT
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Deploy user-application preview
+        id: deploy-user-app
+        working-directory: apps/user-application
+        run: |
+          CLOUDFLARE_ENV=stage pnpm run build
+          OUTPUT=$(wrangler deploy --name user-application-pr-${{ github.event.pull_request.number }} 2>&1)
+          echo "$OUTPUT"
+          # Extract URL from wrangler output
+          URL=$(echo "$OUTPUT" | grep -oP 'https://[^\s]+\.workers\.dev' | head -1 || echo "")
+          if [ -z "$URL" ]; then
+            # Fallback: construct URL manually
+            URL="https://user-application-pr-${{ github.event.pull_request.number }}.workers.dev"
+          fi
+          echo "url=$URL" >> $GITHUB_OUTPUT
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Comment PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comment = `## 🚀 Preview Deployment
+
+            Your changes have been deployed to preview environments:
+
+            - **Data Service**: ${{ steps.deploy-data-service.outputs.url }}
+            - **User Application**: ${{ steps.deploy-user-app.outputs.url }}
+
+            These previews will be automatically cleaned up when this PR is closed.`;
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' && comment.body.includes('Preview Deployment')
+            );
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+
+  cleanup-preview:
+    if: github.event.action == 'closed'
+    name: Cleanup Preview
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Delete data-service preview
+        working-directory: apps/data-service
+        run: |
+          wrangler delete data-service-pr-${{ github.event.pull_request.number }} --force
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        continue-on-error: true
+
+      - name: Delete user-application preview
+        working-directory: apps/user-application
+        run: |
+          wrangler delete user-application-pr-${{ github.event.pull_request.number }} --force
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        continue-on-error: true
