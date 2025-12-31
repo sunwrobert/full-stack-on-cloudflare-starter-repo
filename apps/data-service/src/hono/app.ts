@@ -15,13 +15,14 @@ App.get("/click-socket", async (c) => {
     return c.text("Upgrade header required", 426);
   }
 
-  const accountId = c.req.param("accountId");
+  const accountId = c.req.header("account-id");
   if (!accountId) {
     return c.text("Account ID is required", 404);
   }
 
   const doId = c.env.LINK_CLICK_TRACKER.idFromName(accountId);
   const stub = c.env.LINK_CLICK_TRACKER.get(doId);
+
   return await stub.fetch(c.req.raw);
 });
 
