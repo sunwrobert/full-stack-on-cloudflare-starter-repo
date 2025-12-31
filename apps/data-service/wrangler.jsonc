@@ -25,7 +25,12 @@
   "queues": {
     "consumers": [
       {
-        "queue": "smart-links-data-queue-stage"
+        "queue": "smart-links-data-queue-stage",
+        "dead_letter_queue": "smart-links-dlq-stage"
+      },
+      {
+        "queue": "smart-links-dlq-stage",
+        "retry_delay": 0
       }
     ],
     "producers": [
