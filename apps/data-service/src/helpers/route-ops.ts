@@ -3,6 +3,7 @@ import {
   type LinkSchemaType,
   linkSchema,
 } from "@repo/data-ops/zod-schema/links";
+import type { LinkClickMessageType } from "@repo/data-ops/zod-schema/queue";
 
 async function getLinkInfoFromKv(env: Env, id: string) {
   const linkInfo = await env.GEO_CACHE.get(id);
@@ -61,4 +62,20 @@ export function getDestinationForCountry(
 
   // Fallback to default
   return linkInfo.destinations.default;
+}
+
+export async function scheduleEvalWorkflow(
+  env: Env,
+  linkInfo: LinkClickMessageType
+) {
+  const doId = env.EVALUATION_SCHEDULER.idFromName(
+    `${linkInfo.data.id}-${linkInfo.data.destination}`
+  );
+  const stub = env.EVALUATION_SCHEDULER.get(doId);
+  await stub.collectLinkClick(
+    linkInfo.data.accountId,
+    linkInfo.data.id,
+    linkInfo.data.destination,
+    linkInfo.data.country || "UNKNOWN"
+  );
 }
