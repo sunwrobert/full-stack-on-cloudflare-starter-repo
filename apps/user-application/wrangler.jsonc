@@ -27,6 +27,24 @@
           "remote": true
         }
       ]
+    },
+
+    "production": {
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "smart-links-prod",
+          "database_id": "b22edc17-41b9-4e1e-a1a8-19a76954f801",
+          "remote": true
+        }
+      ],
+      "services": [
+        {
+          "binding": "BACKEND_SERVICE",
+          "service": "data-service-production",
+          "remote": true
+        }
+      ]
     }
   }
 }

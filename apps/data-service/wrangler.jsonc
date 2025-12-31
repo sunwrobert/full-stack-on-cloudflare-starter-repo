@@ -81,6 +81,80 @@
           "new_sqlite_classes": ["LinkClickTracker"]
         }
       ]
+    },
+    "production": {
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "smart-links-prod",
+          "database_id": "e6b3fe79-b988-4027-a05c-7bceb31eb883",
+          "remote": true
+        }
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "GEO_CACHE",
+          "id": "86a563929ff647c09b6ddec8ddd0115a",
+          "remote": true
+        }
+      ],
+      "queues": {
+        "consumers": [
+          {
+            "queue": "smart-links-data-queue-prod",
+            "dead_letter_queue": "smart-links-dlq-prod"
+          },
+          {
+            "queue": "smart-links-dlq-prod",
+            "retry_delay": 0
+          }
+        ],
+        "producers": [
+          {
+            "binding": "QUEUE",
+            "queue": "smart-links-data-queue-prod"
+          }
+        ]
+      },
+      "workflows": [
+        {
+          "binding": "DESTINATION_EVALUATION_WORKFLOW",
+          "class_name": "DestinationEvaluationWorkflow",
+          "name": "destination-evaluation-workflow-prod"
+        }
+      ],
+      "browser": { "binding": "VIRTUAL_BROWSER" },
+      "ai": {
+        "binding": "AI"
+      },
+      "r2_buckets": [
+        {
+          "binding": "BUCKET",
+          "bucket_name": "smart-links-eval-prod"
+        }
+      ],
+      "durable_objects": {
+        "bindings": [
+          {
+            "class_name": "EvaluationScheduler",
+            "name": "EVALUATION_SCHEDULER"
+          },
+          {
+            "class_name": "LinkClickTracker",
+            "name": "LINK_CLICK_TRACKER"
+          }
+        ]
+      },
+      "migrations": [
+        {
+          "tag": "v1",
+          "new_classes": ["EvaluationScheduler"]
+        },
+        {
+          "tag": "v2",
+          "new_sqlite_classes": ["LinkClickTracker"]
+        }
+      ]
     }
   }
 }
