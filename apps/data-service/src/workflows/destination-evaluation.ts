@@ -3,6 +3,8 @@ import {
   type WorkflowEvent,
   type WorkflowStep,
 } from "cloudflare:workers";
+import { initDatabase } from "@repo/data-ops/database";
+import { addEvaluation } from "@repo/data-ops/queries/evaluations";
 import { aiDestinationChecker } from "@/helpers/ai-destination-checker";
 import { collectDestinationInfo } from "@/helpers/browser-render";
 
@@ -14,6 +16,8 @@ export class DestinationEvaluationWorkflow extends WorkflowEntrypoint<
     event: Readonly<WorkflowEvent<DestinationStatusEvaluationParams>>,
     step: WorkflowStep
   ) {
+    initDatabase(this.env.DB);
+
     const collectedData = await step.do(
       "Collect rendered destination page data",
       async () => {
@@ -21,7 +25,7 @@ export class DestinationEvaluationWorkflow extends WorkflowEntrypoint<
       }
     );
 
-    const _aiStatus = await step.do(
+    const aiStatus = await step.do(
       "Use AI to check status of page",
       {
         retries: {
@@ -34,6 +38,17 @@ export class DestinationEvaluationWorkflow extends WorkflowEntrypoint<
       }
     );
 
-    console.log(collectedData);
+    const _evaluationId = await step.do(
+      "Save evaluation in database",
+      async () => {
+        return await addEvaluation({
+          linkId: event.payload.linkId,
+          status: aiStatus.status,
+          reason: aiStatus.statusReason,
+          accountId: event.payload.accountId,
+          destinationUrl: event.payload.destinationUrl,
+        });
+      }
+    );
   }
 }
