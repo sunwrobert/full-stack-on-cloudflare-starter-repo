@@ -3,6 +3,7 @@ import {
   type WorkflowEvent,
   type WorkflowStep,
 } from "cloudflare:workers";
+import { aiDestinationChecker } from "@/helpers/ai-destination-checker";
 import { collectDestinationInfo } from "@/helpers/browser-render";
 
 export class DestinationEvaluationWorkflow extends WorkflowEntrypoint<
@@ -17,6 +18,19 @@ export class DestinationEvaluationWorkflow extends WorkflowEntrypoint<
       "Collect rendered destination page data",
       async () => {
         return collectDestinationInfo(this.env, event.payload.destinationUrl);
+      }
+    );
+
+    const _aiStatus = await step.do(
+      "Use AI to check status of page",
+      {
+        retries: {
+          limit: 0,
+          delay: 0,
+        },
+      },
+      async () => {
+        return await aiDestinationChecker(this.env, collectedData.bodyText);
       }
     );
 

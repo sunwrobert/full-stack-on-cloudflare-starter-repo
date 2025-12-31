@@ -47,5 +47,8 @@
       "name": "destination-evaluation-workflow-stage"
     }
   ],
-  "browser": { "binding": "VIRTUAL_BROWSER" }
+  "browser": { "binding": "VIRTUAL_BROWSER" },
+  "ai": {
+    "binding": "AI"
+  }
 }
