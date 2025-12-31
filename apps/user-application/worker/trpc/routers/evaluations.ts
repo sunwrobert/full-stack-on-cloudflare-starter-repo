@@ -18,9 +18,7 @@ export const evaluationsTrpcRoutes = t.router({
       const evaluations = EVALUATIONS;
 
       const oldestCreatedAt =
-        evaluations.length > 0
-          ? evaluations[evaluations.length - 1].createdAt
-          : null;
+        evaluations.length > 0 ? evaluations.at(-1)?.createdAt : null;
 
       return {
         data: evaluations,
