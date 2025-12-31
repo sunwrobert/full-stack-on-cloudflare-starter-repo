@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 3000 --mode development",
-    "deploy:prod": "npm run build:prod && wrangler deploy",
-    "deploy:stage": "npm run build && wrangler deploy",
+    "deploy:prod": "npm run build:prod && wrangler deploy --env production",
+    "deploy:stage": "npm run build && wrangler deploy --env stage",
     "start": "vite --port 3000",
     "build": "vite build && tsc",
     "build:prod": "vite build --mode production && tsc",
