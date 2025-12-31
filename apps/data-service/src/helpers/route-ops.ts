@@ -4,6 +4,7 @@ import {
   linkSchema,
 } from "@repo/data-ops/zod-schema/links";
 import type { LinkClickMessageType } from "@repo/data-ops/zod-schema/queue";
+import moment from "moment";
 
 async function getLinkInfoFromKv(env: Env, id: string) {
   const linkInfo = await env.GEO_CACHE.get(id);
@@ -77,5 +78,23 @@ export async function scheduleEvalWorkflow(
     linkInfo.data.id,
     linkInfo.data.destination,
     linkInfo.data.country || "UNKNOWN"
+  );
+}
+
+export async function captureLinkClickInBackground(
+  env: Env,
+  event: LinkClickMessageType
+) {
+  await env.QUEUE.send(event);
+  const doId = env.LINK_CLICK_TRACKER.idFromName(event.data.accountId);
+  const stub = env.LINK_CLICK_TRACKER.get(doId);
+  if (!(event.data.latitude && event.data.longitude && event.data.country)) {
+    return;
+  }
+  await stub.addClick(
+    event.data.latitude,
+    event.data.longitude,
+    event.data.country,
+    moment().valueOf()
   );
 }
