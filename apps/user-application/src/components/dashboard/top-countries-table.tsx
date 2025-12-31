@@ -1,6 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import iso31661 from "iso-3166-1";
-
+import { Flag } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -10,21 +11,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { trpc } from "@/router";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { Flag } from "lucide-react";
 
 export function TopCountriesTable() {
   const { data: clicksByCountry } = useSuspenseQuery(
-    trpc.links.clicksByCountry.queryOptions(),
+    trpc.links.clicksByCountry.queryOptions()
   );
 
   const totalClicks = clicksByCountry.reduce(
     (sum, item) => sum + item.count,
-    0,
+    0
   );
 
   return (
-    <Card className="hover:shadow-md transition-all duration-200 h-64 flex flex-col">
+    <Card className="flex h-64 flex-col transition-all duration-200 hover:shadow-md">
       <CardHeader className="flex-shrink-0">
         <CardTitle className="flex items-center gap-2">
           <Flag className="h-5 w-5" />
@@ -32,7 +31,7 @@ export function TopCountriesTable() {
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 overflow-hidden">
-        <div className="overflow-auto h-full">
+        <div className="h-full overflow-auto">
           <Table>
             <TableHeader>
               <TableRow>

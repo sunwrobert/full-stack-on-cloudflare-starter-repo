@@ -1,9 +1,13 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { ChevronLeft, ChevronRight, Info } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -19,11 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ChevronLeft, ChevronRight, Info } from "lucide-react";
 import { trpc } from "@/router";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 
 type Evaluation = {
   id: string;
@@ -38,14 +38,14 @@ type Evaluation = {
 export function EvaluationsTable() {
   const navigate = useNavigate();
   const [createdBefore, setCreatedBefore] = useState<string | undefined>(
-    undefined,
+    undefined
   );
   const [paginationHistory, setPaginationHistory] = useState<string[]>([]);
 
   const { data: evaluationsData } = useSuspenseQuery(
     trpc.evaluations.recentEvaluations.queryOptions({
-      createdBefore: createdBefore,
-    }),
+      createdBefore,
+    })
   );
 
   const evaluations = evaluationsData.data;
@@ -89,7 +89,7 @@ export function EvaluationsTable() {
     columnHelper.accessor("createdAt", {
       header: "Created At",
       cell: (info) => (
-        <div className="text-sm text-muted-foreground">
+        <div className="text-muted-foreground text-sm">
           {formatDate(info.getValue())}
         </div>
       ),
@@ -101,7 +101,7 @@ export function EvaluationsTable() {
         const statusDisplay = getStatusDisplay(status);
         return (
           <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${statusDisplay.classes}`}
+            className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-medium text-xs ${statusDisplay.classes}`}
           >
             {statusDisplay.label}
           </span>
@@ -114,7 +114,7 @@ export function EvaluationsTable() {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <Info className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
+              <Info className="h-4 w-4 text-muted-foreground transition-colors hover:text-foreground" />
             </TooltipTrigger>
             <TooltipContent>
               <p>{info.getValue()}</p>
@@ -129,7 +129,7 @@ export function EvaluationsTable() {
         const url = info.getValue();
         return (
           <div
-            className="text-sm font-medium text-ellipsis overflow-hidden max-w-[200px] text-blue-600 hover:text-blue-800 cursor-pointer underline"
+            className="max-w-[200px] cursor-pointer overflow-hidden text-ellipsis font-medium text-blue-600 text-sm underline hover:text-blue-800"
             onClick={(e) => {
               e.stopPropagation();
               window.open(url, "_blank");
@@ -161,7 +161,7 @@ export function EvaluationsTable() {
       const previousCreatedBefore = newHistory.pop();
       setPaginationHistory(newHistory);
       setCreatedBefore(
-        previousCreatedBefore === "" ? undefined : previousCreatedBefore,
+        previousCreatedBefore === "" ? undefined : previousCreatedBefore
       );
     }
   };
@@ -179,7 +179,7 @@ export function EvaluationsTable() {
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext(),
+                          header.getContext()
                         )}
                   </TableHead>
                 ))}
@@ -190,9 +190,9 @@ export function EvaluationsTable() {
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
                   className="cursor-pointer hover:bg-muted/50"
+                  data-state={row.getIsSelected() && "selected"}
+                  key={row.id}
                   onClick={() => {
                     navigate({
                       to: "/app/link/$id",
@@ -204,7 +204,7 @@ export function EvaluationsTable() {
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}
@@ -213,8 +213,8 @@ export function EvaluationsTable() {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
                   className="h-24 text-center"
+                  colSpan={columns.length}
                 >
                   No evaluations found.
                 </TableCell>
@@ -225,26 +225,26 @@ export function EvaluationsTable() {
       </div>
 
       <div className="flex items-center justify-between px-2">
-        <div className="flex-1 text-sm text-muted-foreground">
+        <div className="flex-1 text-muted-foreground text-sm">
           Showing {evaluations.length} entries
         </div>
         <div className="flex items-center space-x-2">
           <Button
-            variant="outline"
-            size="sm"
-            onClick={handlePreviousPage}
             disabled={paginationHistory.length === 0}
+            onClick={handlePreviousPage}
+            size="sm"
+            variant="outline"
           >
             <ChevronLeft className="h-4 w-4" />
             Previous
           </Button>
           <Button
-            variant="outline"
-            size="sm"
-            onClick={handleNextPage}
             disabled={
               !evaluationsData.oldestCreatedAt || evaluations.length <= 10
             }
+            onClick={handleNextPage}
+            size="sm"
+            variant="outline"
           >
             Next
             <ChevronRight className="h-4 w-4" />

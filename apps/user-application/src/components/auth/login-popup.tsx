@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { siGoogle } from "simple-icons";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -5,11 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { siGoogle } from "simple-icons";
-
-import { useState } from "react";
 
 // Mock authClient with dummy data
 const authClient = {
@@ -47,8 +46,8 @@ export function LoginPopup({ children }: LoginPopupProps) {
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader className="text-center space-y-4">
-          <DialogTitle className="text-2xl font-bold">
+        <DialogHeader className="space-y-4 text-center">
+          <DialogTitle className="font-bold text-2xl">
             Continue with Google
           </DialogTitle>
           <p className="text-muted-foreground text-sm">
@@ -58,22 +57,22 @@ export function LoginPopup({ children }: LoginPopupProps) {
 
         <div className="mt-6">
           <Button
+            className="group relative h-12 w-full overflow-hidden font-medium text-base transition-colors hover:bg-accent/50"
+            disabled={loading}
             onClick={signInWithGoogle}
             variant="outline"
-            className="w-full h-12 text-base font-medium relative overflow-hidden group hover:bg-accent/50 transition-colors"
-            disabled={loading}
           >
             {loading ? (
               <>
-                <div className="w-5 h-5 mr-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                <div className="mr-3 h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
                 Signing in...
               </>
             ) : (
               <>
                 <svg
-                  className="w-5 h-5 mr-3"
-                  viewBox="0 0 24 24"
+                  className="mr-3 h-5 w-5"
                   fill="currentColor"
+                  viewBox="0 0 24 24"
                 >
                   <path d={siGoogle.path} />
                 </svg>
@@ -86,18 +85,18 @@ export function LoginPopup({ children }: LoginPopupProps) {
         <Separator className="my-6" />
 
         <div className="text-center">
-          <p className="text-xs text-muted-foreground leading-relaxed">
+          <p className="text-muted-foreground text-xs leading-relaxed">
             By continuing, you agree to our{" "}
             <a
+              className="underline transition-colors hover:text-foreground"
               href="#"
-              className="underline hover:text-foreground transition-colors"
             >
               Terms of Service
             </a>{" "}
             and{" "}
             <a
+              className="underline transition-colors hover:text-foreground"
               href="#"
-              className="underline hover:text-foreground transition-colors"
             >
               Privacy Policy
             </a>

@@ -1,7 +1,7 @@
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { AppSidebar } from "@/components/common/app-sidebar";
 import { SiteHeader } from "@/components/common/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createFileRoute("/app/_authed")({
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/app/_authed")({
 });
 function RouteComponent() {
   return (
-    <div className="h-screen overflow-hidden flex">
+    <div className="flex h-screen overflow-hidden">
       <SidebarProvider
         style={
           {
@@ -19,9 +19,9 @@ function RouteComponent() {
         }
       >
         <AppSidebar variant="inset" />
-        <SidebarInset className="flex flex-col w-full">
+        <SidebarInset className="flex w-full flex-col">
           <SiteHeader />
-          <div className="flex-1 overflow-auto @container/main">
+          <div className="@container/main flex-1 overflow-auto">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               <Outlet />
               <Toaster />

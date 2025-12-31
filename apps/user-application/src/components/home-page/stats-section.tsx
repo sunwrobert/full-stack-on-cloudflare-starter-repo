@@ -25,10 +25,10 @@ const stats = [
 
 export function StatsSection() {
   return (
-    <section className="py-16 bg-primary/5">
+    <section className="bg-primary/5 py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-4">
+        <div className="mb-12 text-center">
+          <h2 className="mb-4 font-bold text-2xl tracking-tight sm:text-3xl">
             Trusted by businesses worldwide
           </h2>
           <p className="text-muted-foreground">
@@ -37,18 +37,18 @@ export function StatsSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
           {stats.map((stat, index) => (
             <Card
+              className="border-0 bg-card/50 text-center backdrop-blur"
               key={index}
-              className="text-center bg-card/50 backdrop-blur border-0"
             >
               <CardContent className="pt-6">
-                <div className="text-2xl sm:text-3xl font-bold text-primary mb-1">
+                <div className="mb-1 font-bold text-2xl text-primary sm:text-3xl">
                   {stat.number}
                 </div>
-                <div className="font-semibold text-sm mb-2">{stat.label}</div>
-                <div className="text-xs text-muted-foreground">
+                <div className="mb-2 font-semibold text-sm">{stat.label}</div>
+                <div className="text-muted-foreground text-xs">
                   {stat.description}
                 </div>
               </CardContent>

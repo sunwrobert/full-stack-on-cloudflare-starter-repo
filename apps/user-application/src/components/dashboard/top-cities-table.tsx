@@ -1,3 +1,4 @@
+import { MapPin } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -7,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { MapPin } from "lucide-react";
 
 interface City {
   city: string;
@@ -20,7 +20,7 @@ interface TopCitiesTableProps {
 }
 export function TopCitiesTable({ cities }: TopCitiesTableProps) {
   return (
-    <Card className="hover:shadow-md transition-all duration-200">
+    <Card className="transition-all duration-200 hover:shadow-md">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MapPin className="h-5 w-5" />

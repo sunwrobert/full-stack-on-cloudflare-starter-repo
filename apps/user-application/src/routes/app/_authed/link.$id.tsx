@@ -1,5 +1,12 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import {
+  DefaultUrlEditor,
+  GeoRoutingSection,
+  GeoRoutingToggle,
+  LinkNameEditor,
+} from "@/components/link";
 import {
   Card,
   CardContent,
@@ -8,15 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  LinkNameEditor,
-  GeoRoutingToggle,
-  DefaultUrlEditor,
-  GeoRoutingSection,
-} from "@/components/link";
-
 import { trpc } from "@/router";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/app/_authed/link/$id")({
   component: RouteComponent,
@@ -24,7 +23,7 @@ export const Route = createFileRoute("/app/_authed/link/$id")({
     await context.queryClient.prefetchQuery(
       context.trpc.links.getLink.queryOptions({
         linkId: params.id,
-      }),
+      })
     );
   },
 });
@@ -35,11 +34,11 @@ function RouteComponent() {
   const { data: linkInfo } = useSuspenseQuery(
     trpc.links.getLink.queryOptions({
       linkId: id,
-    }),
+    })
   );
 
   const [geoToggle, setGeoToggle] = useState(
-    linkInfo ? Object.keys(linkInfo.destinations).length > 1 : false,
+    linkInfo ? Object.keys(linkInfo.destinations).length > 1 : false
   );
 
   if (!linkInfo) {
@@ -47,10 +46,10 @@ function RouteComponent() {
       <div className="min-h-screen bg-gradient-to-br from-background via-muted to-muted/50 p-6">
         <div className="w-full space-y-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
+            <h1 className="font-bold text-3xl tracking-tight">
               Link Dashboard
             </h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="mt-2 text-muted-foreground">
               Loading link information...
             </p>
           </div>
@@ -60,12 +59,12 @@ function RouteComponent() {
   }
 
   return (
-    <div className="min-h-screen  via-muted to-muted/50 p-6">
+    <div className="min-h-screen via-muted to-muted/50 p-6">
       <div className="w-full space-y-8">
         {/* Header Section */}
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Link Dashboard</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="font-bold text-3xl tracking-tight">Link Dashboard</h1>
+          <p className="mt-2 text-muted-foreground">
             Monitor and manage your smart link performance
           </p>
         </div>
@@ -73,7 +72,7 @@ function RouteComponent() {
         {/* Link Configuration */}
         <Card className="shadow-xl">
           <CardHeader className="pb-8">
-            <CardTitle className="text-2xl font-semibold">
+            <CardTitle className="font-semibold text-2xl">
               Link Configuration
             </CardTitle>
             <CardDescription className="text-base">
@@ -85,20 +84,20 @@ function RouteComponent() {
 
             <Separator />
             <DefaultUrlEditor
-              linkId={linkInfo.linkId}
               destinations={linkInfo.destinations}
+              linkId={linkInfo.linkId}
             />
             <GeoRoutingToggle
-              linkId={linkInfo.linkId}
               destinations={linkInfo.destinations}
-              setGeoToggle={setGeoToggle}
               geoToggle={geoToggle}
+              linkId={linkInfo.linkId}
+              setGeoToggle={setGeoToggle}
             />
 
             <GeoRoutingSection
-              linkId={linkInfo.linkId}
               destinations={linkInfo.destinations}
               geoToggle={geoToggle}
+              linkId={linkInfo.linkId}
             />
           </CardContent>
         </Card>

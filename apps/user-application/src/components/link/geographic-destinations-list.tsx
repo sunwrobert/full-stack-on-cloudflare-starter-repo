@@ -1,15 +1,15 @@
+import type { DestinationsSchemaType } from "@repo/data-ops/zod-schema/links";
+import { useMutation } from "@tanstack/react-query";
+import { AnimatePresence, motion } from "framer-motion";
+import iso31661 from "iso-3166-1";
+import { Search, X } from "lucide-react";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { X, Search } from "lucide-react";
-import iso31661 from "iso-3166-1";
-import { DestinationsSchemaType } from "@repo/data-ops/zod-schema/links";
 import { queryClient, trpc } from "@/router";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { useState, useMemo } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 
 interface GeographicDestinationsListProps {
   linkId: string;
@@ -35,7 +35,7 @@ export function GeographicDestinationsList({
       onError: () => {
         toast.error("Failed to remove destination");
       },
-    }),
+    })
   );
 
   const removeDestination = (countryCode: string) => {
@@ -58,7 +58,7 @@ export function GeographicDestinationsList({
   // Get all country codes except 'default' and sort by country name
   const sortedCountryEntries = useMemo(() => {
     const countryEntries = Object.entries(destinations).filter(
-      ([key]) => key !== "default",
+      ([key]) => key !== "default"
     );
 
     return countryEntries.sort(([codeA], [codeB]) => {
@@ -82,47 +82,47 @@ export function GeographicDestinationsList({
 
   return (
     <div className="space-y-3">
-      <Label className="text-sm font-medium">Country-Specific Routes</Label>
+      <Label className="font-medium text-sm">Country-Specific Routes</Label>
       {showSearch && (
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
           <Input
+            className="pl-10"
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search countries..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
           />
         </div>
       )}
       <AnimatePresence mode="popLayout">
         {filteredCountryEntries.map(([countryCode, url]) => (
           <motion.div
+            animate={{ opacity: 1, height: "auto", marginBottom: 12 }}
+            className="flex items-center gap-3 overflow-hidden rounded-lg border bg-muted/50 p-4"
+            exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+            initial={{ opacity: 0, height: 0, marginBottom: 0 }}
             key={countryCode}
             layout
-            initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-            animate={{ opacity: 1, height: "auto", marginBottom: 12 }}
-            exit={{ opacity: 0, height: 0, marginBottom: 0 }}
             transition={{
               duration: 0.3,
               ease: "easeInOut",
               layout: { duration: 0.2 },
             }}
-            className="flex items-center gap-3 p-4 rounded-lg border bg-muted/50 overflow-hidden"
           >
             <Badge variant="secondary">
               {getCountryNameByCode(countryCode)}
             </Badge>
-            <div className="flex-1 font-mono text-sm text-muted-foreground  px-3 py-2 rounded border">
+            <div className="flex-1 rounded border px-3 py-2 font-mono text-muted-foreground text-sm">
               {url}
             </div>
             <Button
-              variant="ghost"
-              size="sm"
+              className="text-destructive hover:bg-destructive/10 hover:text-destructive"
               disabled={updateDestinationMutation.isPending}
               onClick={() => removeDestination(countryCode)}
-              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+              size="sm"
+              variant="ghost"
             >
-              <X className="w-4 h-4" />
+              <X className="h-4 w-4" />
             </Button>
           </motion.div>
         ))}

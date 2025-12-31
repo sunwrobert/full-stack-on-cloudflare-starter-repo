@@ -1,5 +1,9 @@
+import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Link, Sparkles } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,11 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Link, Sparkles } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
 import { trpc } from "@/router";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/_authed/create")({
   component: RouteComponent,
@@ -37,7 +37,7 @@ function RouteComponent() {
       onError: () => {
         toast.error("Failed to create link");
       },
-    }),
+    })
   );
 
   const isValidUrl = (string: string) => {
@@ -51,11 +51,11 @@ function RouteComponent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted to-muted/50 p-6">
-      <div className="max-w-2xl mx-auto space-y-8">
+      <div className="mx-auto max-w-2xl space-y-8">
         {/* Main Form */}
         <Card className="shadow-xl">
           <CardHeader className="pb-8">
-            <CardTitle className="text-2xl font-semibold">
+            <CardTitle className="font-semibold text-2xl">
               Create Link
             </CardTitle>
             <CardDescription className="text-base">
@@ -66,39 +66,41 @@ function RouteComponent() {
             {/* Link Name */}
             <div className="space-y-3">
               <Label
+                className="flex items-center gap-2 font-medium text-sm"
                 htmlFor="name"
-                className="text-sm font-medium flex items-center gap-2"
               >
-                <Link className="w-4 h-4" />
+                <Link className="h-4 w-4" />
                 Link Name
               </Label>
               <Input
+                className="h-12 text-base"
                 id="name"
+                onChange={(e) => setName(e.target.value)}
                 placeholder="Enter a memorable name for your link"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="h-12 text-base"
               />
             </div>
 
             {/* URL Input */}
             <div className="space-y-3">
-              <Label htmlFor="url" className="text-sm font-medium">
+              <Label className="font-medium text-sm" htmlFor="url">
                 Destination URL
               </Label>
               <Input
-                id="url"
-                type="url"
-                placeholder="https://example.com"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
                 className="h-12 text-base"
+                id="url"
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="https://example.com"
+                type="url"
+                value={url}
               />
             </div>
 
             {/* Submit Button */}
             <div className="pt-6">
               <Button
+                className="h-12 w-full text-base shadow-lg transition-all duration-200 hover:shadow-xl"
+                disabled={!(name && url && isValidUrl(url))}
                 onClick={() => {
                   createMutation.mutate({
                     name,
@@ -107,10 +109,8 @@ function RouteComponent() {
                     },
                   });
                 }}
-                disabled={!name || !url || !isValidUrl(url)}
-                className="w-full h-12 text-base shadow-lg hover:shadow-xl transition-all duration-200"
               >
-                <Sparkles className="w-5 h-5 mr-2" />
+                <Sparkles className="mr-2 h-5 w-5" />
                 Create Link
               </Button>
             </div>

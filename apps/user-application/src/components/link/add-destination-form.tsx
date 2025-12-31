@@ -1,13 +1,11 @@
+import type { DestinationsSchemaType } from "@repo/data-ops/zod-schema/links";
+import { useMutation } from "@tanstack/react-query";
+import iso31661 from "iso-3166-1";
+import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Command,
   CommandEmpty,
@@ -15,13 +13,15 @@ import {
   CommandInput,
   CommandItem,
 } from "@/components/ui/command";
-import { Plus, Check, ChevronsUpDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import iso31661 from "iso-3166-1";
-import { DestinationsSchemaType } from "@repo/data-ops/zod-schema/links";
 import { queryClient, trpc } from "@/router";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
 
 interface AddDestinationFormProps {
   usedCountryCodes: string[];
@@ -40,11 +40,11 @@ export function AddDestinationForm({
 
   const countries = iso31661.all();
   const availableCountries = countries.filter(
-    (country) => !usedCountryCodes.includes(country.alpha2),
+    (country) => !usedCountryCodes.includes(country.alpha2)
   );
 
   const selectedCountry = availableCountries.find(
-    (country) => country.alpha2 === newCountry,
+    (country) => country.alpha2 === newCountry
   );
 
   const updateDestinationMutation = useMutation(
@@ -60,7 +60,7 @@ export function AddDestinationForm({
       onError: () => {
         toast.error("Failed to add destination");
       },
-    }),
+    })
   );
 
   const addGeoDestination = () => {
@@ -70,7 +70,7 @@ export function AddDestinationForm({
         [newCountry]: newUrl,
       };
       updateDestinationMutation.mutate({
-        linkId: linkId,
+        linkId,
         destinations: newDest,
       });
       setNewCountry("");
@@ -80,26 +80,26 @@ export function AddDestinationForm({
 
   if (availableCountries.length === 0) {
     return (
-      <div className="text-center py-4 text-muted-foreground text-sm">
+      <div className="py-4 text-center text-muted-foreground text-sm">
         All available countries have been assigned destinations
       </div>
     );
   }
 
   return (
-    <Card className="border-dashed border-2 bg-muted/30">
+    <Card className="border-2 border-dashed bg-muted/30">
       <CardContent className="pt-6">
         <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label className="text-sm font-medium">Country</Label>
-              <Popover open={open} onOpenChange={setOpen}>
+              <Label className="font-medium text-sm">Country</Label>
+              <Popover onOpenChange={setOpen} open={open}>
                 <PopoverTrigger asChild>
                   <Button
-                    variant="outline"
-                    role="combobox"
                     aria-expanded={open}
-                    className="w-full justify-between h-10"
+                    className="h-10 w-full justify-between"
+                    role="combobox"
+                    variant="outline"
                   >
                     {selectedCountry
                       ? selectedCountry.country
@@ -115,22 +115,22 @@ export function AddDestinationForm({
                       {availableCountries.map((country) => (
                         <CommandItem
                           key={country.alpha2}
-                          value={country.country}
                           onSelect={() => {
                             setNewCountry(
                               country.alpha2 === newCountry
                                 ? ""
-                                : country.alpha2,
+                                : country.alpha2
                             );
                             setOpen(false);
                           }}
+                          value={country.country}
                         >
                           <Check
                             className={cn(
                               "mr-2 h-4 w-4",
                               newCountry === country.alpha2
                                 ? "opacity-100"
-                                : "opacity-0",
+                                : "opacity-0"
                             )}
                           />
                           {country.country}
@@ -142,24 +142,24 @@ export function AddDestinationForm({
               </Popover>
             </div>
             <div className="space-y-2">
-              <Label className="text-sm font-medium">Destination URL</Label>
+              <Label className="font-medium text-sm">Destination URL</Label>
               <Input
-                type="url"
-                placeholder="https://example.com"
-                value={newUrl}
-                onChange={(e) => setNewUrl(e.target.value)}
                 className="h-10"
+                onChange={(e) => setNewUrl(e.target.value)}
+                placeholder="https://example.com"
+                type="url"
+                value={newUrl}
               />
             </div>
           </div>
           <Button
-            onClick={addGeoDestination}
+            className="h-10 w-full"
             disabled={
-              !newCountry || !newUrl || updateDestinationMutation.isPending
+              !(newCountry && newUrl) || updateDestinationMutation.isPending
             }
-            className="w-full h-10"
+            onClick={addGeoDestination}
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <Plus className="mr-2 h-4 w-4" />
             Add Destination
           </Button>
         </div>

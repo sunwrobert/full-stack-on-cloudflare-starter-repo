@@ -1,10 +1,10 @@
+import { RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider } from "@tanstack/react-router";
 import "./styles/globals.css";
 
-import { createRouter } from "./router";
 import reportWebVitals from "./reportWebVitals";
+import { createRouter } from "./router";
 
 // Create a new router instance
 const router = createRouter();
@@ -16,7 +16,7 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <RouterProvider router={router} />
-    </StrictMode>,
+    </StrictMode>
   );
 }
 // If you want to start measuring performance in your app, pass a function

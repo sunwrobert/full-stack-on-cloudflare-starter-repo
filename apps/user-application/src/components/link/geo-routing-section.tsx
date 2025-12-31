@@ -1,8 +1,7 @@
+import type { DestinationsSchemaType } from "@repo/data-ops/zod-schema/links";
 import { MapPin } from "lucide-react";
-import { GeographicDestinationsList } from "./geographic-destinations-list";
 import { AddDestinationForm } from "./add-destination-form";
-
-import { DestinationsSchemaType } from "@repo/data-ops/zod-schema/links";
+import { GeographicDestinationsList } from "./geographic-destinations-list";
 
 interface GeoRoutingSectionProps {
   destinations: DestinationsSchemaType;
@@ -19,17 +18,17 @@ export function GeoRoutingSection({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-        <MapPin className="w-4 h-4" />
+      <div className="flex items-center gap-2 font-medium text-foreground text-sm">
+        <MapPin className="h-4 w-4" />
         Geographic Destinations
       </div>
 
       {geoToggle && (
         <>
           <AddDestinationForm
-            usedCountryCodes={usedCountryCodes}
-            linkId={linkId}
             destinations={destinations}
+            linkId={linkId}
+            usedCountryCodes={usedCountryCodes}
           />
           <GeographicDestinationsList
             destinations={destinations}

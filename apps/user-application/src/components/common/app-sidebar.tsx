@@ -1,5 +1,5 @@
-import * as React from "react";
 import { IconInnerShadowTop } from "@tabler/icons-react";
+import type * as React from "react";
 
 import { NavMain } from "@/components/common/nav-main";
 import { NavUser } from "@/components/common/nav-user";
@@ -25,7 +25,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">SmrtLnks</span>
+                <span className="font-semibold text-base">SmrtLnks</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

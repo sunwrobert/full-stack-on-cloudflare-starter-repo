@@ -1,3 +1,7 @@
+import { LogOut, User } from "lucide-react";
+import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -5,10 +9,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, User } from "lucide-react";
-import { useState } from "react";
 
 // Mock authClient with dummy data
 const authClient = {
@@ -57,13 +57,13 @@ function UserProfilePopup({ data, children }: UserProfilePopupProps) {
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader className="text-center space-y-4">
+        <DialogHeader className="space-y-4 text-center">
           <div className="flex flex-col items-center space-y-2">
             <Avatar className="h-16 w-16">
               {data?.user.image && (
                 <AvatarImage
-                  src={data.user.image}
                   alt={data.user.name || "User"}
+                  src={data.user.image}
                 />
               )}
               <AvatarFallback>
@@ -75,11 +75,11 @@ function UserProfilePopup({ data, children }: UserProfilePopupProps) {
               </AvatarFallback>
             </Avatar>
             <div>
-              <DialogTitle className="text-xl font-semibold">
+              <DialogTitle className="font-semibold text-xl">
                 {data?.user.name || "User"}
               </DialogTitle>
               {data?.user.email && (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   {data.user.email}
                 </p>
               )}
@@ -89,19 +89,19 @@ function UserProfilePopup({ data, children }: UserProfilePopupProps) {
 
         <div className="mt-6">
           <Button
+            className="h-12 w-full font-medium text-base transition-colors hover:border-destructive/20 hover:bg-destructive/10 hover:text-destructive"
+            disabled={loading}
             onClick={handleLogout}
             variant="outline"
-            className="w-full h-12 text-base font-medium hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 transition-colors"
-            disabled={loading}
           >
             {loading ? (
               <>
-                <div className="w-4 h-4 mr-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                <div className="mr-3 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                 Signing out...
               </>
             ) : (
               <>
-                <LogOut className="w-4 h-4 mr-3" />
+                <LogOut className="mr-3 h-4 w-4" />
                 Sign out
               </>
             )}
@@ -116,7 +116,7 @@ export function UserCircle() {
   const { data: user, isPending: loading } = authClient.useSession();
 
   if (loading) {
-    return <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />;
+    return <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />;
   }
 
   if (!user) {
@@ -125,10 +125,10 @@ export function UserCircle() {
 
   return (
     <UserProfilePopup data={user}>
-      <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+      <Button className="relative h-8 w-8 rounded-full" variant="ghost">
         <Avatar className="h-8 w-8">
           {user.user.image && (
-            <AvatarImage src={user.user.image} alt={user.user.name || "User"} />
+            <AvatarImage alt={user.user.name || "User"} src={user.user.image} />
           )}
           <AvatarFallback>
             {user.user.name ? (
@@ -149,10 +149,10 @@ export function UserTab() {
   if (loading) {
     return (
       <div className="flex items-center gap-3 p-3">
-        <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
+        <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
         <div className="flex flex-col gap-1">
-          <div className="h-3 w-16 bg-muted animate-pulse rounded" />
-          <div className="h-2 w-24 bg-muted animate-pulse rounded" />
+          <div className="h-3 w-16 animate-pulse rounded bg-muted" />
+          <div className="h-2 w-24 animate-pulse rounded bg-muted" />
         </div>
       </div>
     );
@@ -165,12 +165,12 @@ export function UserTab() {
   return (
     <UserProfilePopup data={data}>
       <Button
+        className="flex w-full items-center justify-start gap-3 p-2"
         variant="ghost"
-        className="flex items-center gap-3 p-2 w-full justify-start"
       >
         <Avatar className="h-8 w-8">
           {data.user.image && (
-            <AvatarImage src={data.user.image} alt={data.user.name || "User"} />
+            <AvatarImage alt={data.user.name || "User"} src={data.user.image} />
           )}
           <AvatarFallback>
             {data.user.name ? (
@@ -185,7 +185,7 @@ export function UserTab() {
             {data.user.name || "User"}
           </span>
           {data.user.email && (
-            <span className="text-xs text-muted-foreground">
+            <span className="text-muted-foreground text-xs">
               {data.user.email}
             </span>
           )}

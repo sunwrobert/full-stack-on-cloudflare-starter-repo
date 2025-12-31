@@ -1,4 +1,4 @@
-import { clsx, type ClassValue } from "clsx";
+import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -10,7 +10,7 @@ export const formatRelativeTime = (timestamp: string) => {
   const clickedTime = new Date(timestamp);
   console.log(clickedTime);
   const diffInSeconds = Math.floor(
-    (now.getTime() - clickedTime.getTime()) / 1000,
+    (now.getTime() - clickedTime.getTime()) / 1000
   );
 
   if (diffInSeconds < 60) {
@@ -63,7 +63,7 @@ export const groupClicksByMile = (clicks: GeoClick[]): GroupedGeoClick[] => {
       acc[key].count++;
       return acc;
     },
-    {} as Record<string, GroupedGeoClick>,
+    {} as Record<string, GroupedGeoClick>
   );
 
   return Object.values(clickGroups);

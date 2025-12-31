@@ -1,11 +1,11 @@
+import type { DestinationsSchemaType } from "@repo/data-ops/zod-schema/links";
+import { useMutation } from "@tanstack/react-query";
+import { Check, Edit3 } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Edit3, Check } from "lucide-react";
-import { DestinationsSchemaType } from "@repo/data-ops/zod-schema/links";
 import { trpc } from "@/router";
-import { useMutation } from "@tanstack/react-query";
 
 interface DefaultUrlEditorProps {
   destinations: DestinationsSchemaType;
@@ -28,7 +28,7 @@ export function DefaultUrlEditor({
   const updateDestinationMutation = useMutation(
     trpc.links.updateLinkDestinations.mutationOptions({
       onSettled: () => {},
-    }),
+    })
   );
 
   const handleSave = () => {
@@ -46,36 +46,36 @@ export function DefaultUrlEditor({
 
   return (
     <div className="space-y-3">
-      <Label htmlFor="defaultUrl" className="text-sm font-medium">
+      <Label className="font-medium text-sm" htmlFor="defaultUrl">
         {label}
       </Label>
       {description && (
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <p className="text-muted-foreground text-sm">{description}</p>
       )}
       {isEditing ? (
         <div className="flex items-center gap-2">
           <Input
+            className="h-12 flex-1 text-base"
             id="defaultUrl"
-            type="url"
-            placeholder="https://example.com"
-            value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="h-12 text-base flex-1"
+            placeholder="https://example.com"
+            type="url"
+            value={url}
           />
-          <Button onClick={handleSave} size="sm" className="h-12 px-3">
-            <Check className="w-4 h-4" />
+          <Button className="h-12 px-3" onClick={handleSave} size="sm">
+            <Check className="h-4 w-4" />
           </Button>
         </div>
       ) : (
-        <div className="flex items-center gap-3 p-4 rounded-lg border bg-muted/30">
-          <code className="text-sm text-muted-foreground flex-1">{url}</code>
+        <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-4">
+          <code className="flex-1 text-muted-foreground text-sm">{url}</code>
           <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsEditing(true)}
             className="h-8 w-8 p-0"
+            onClick={() => setIsEditing(true)}
+            size="sm"
+            variant="ghost"
           >
-            <Edit3 className="w-4 h-4" />
+            <Edit3 className="h-4 w-4" />
           </Button>
         </div>
       )}

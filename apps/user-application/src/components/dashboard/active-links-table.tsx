@@ -1,3 +1,6 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import { MousePointer } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -9,9 +12,6 @@ import {
 } from "@/components/ui/table";
 import { formatRelativeTime } from "@/lib/utils";
 import { trpc } from "@/router";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
-import { MousePointer } from "lucide-react";
 
 export function ActiveLinksTable() {
   const navigate = useNavigate();
@@ -19,11 +19,11 @@ export function ActiveLinksTable() {
   const { data } = useSuspenseQuery(
     trpc.links.activeLinks.queryOptions(undefined, {
       refetchInterval: 5000,
-    }),
+    })
   );
 
   return (
-    <Card className="hover:shadow-md transition-all duration-200">
+    <Card className="transition-all duration-200 hover:shadow-md">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MousePointer className="h-5 w-5" />
@@ -32,7 +32,7 @@ export function ActiveLinksTable() {
       </CardHeader>
       <CardContent>
         {data.length === 0 ? (
-          <div className="text-center py-4 text-muted-foreground">
+          <div className="py-4 text-center text-muted-foreground">
             No link clicks in the last 60 Minutes
           </div>
         ) : (
@@ -47,6 +47,7 @@ export function ActiveLinksTable() {
             <TableBody>
               {data.map((link, index) => (
                 <TableRow
+                  className="cursor-pointer hover:bg-muted"
                   key={index}
                   onClick={() =>
                     navigate({
@@ -56,7 +57,6 @@ export function ActiveLinksTable() {
                       },
                     })
                   }
-                  className="cursor-pointer hover:bg-muted"
                 >
                   <TableCell className="font-medium">
                     <div className="max-w-xs truncate">{link.name}</div>

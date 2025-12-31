@@ -1,6 +1,6 @@
+import { useRouterState } from "@tanstack/react-router";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { useRouterState } from "@tanstack/react-router";
 
 export function SiteHeader() {
   const routerState = useRouterState();
@@ -11,7 +11,7 @@ export function SiteHeader() {
     if (path === "/app/links") return "Links";
     if (path === "/app/create") return "Create Link";
     if (path.startsWith("/app/link/")) {
-      return `Link`;
+      return "Link";
     }
     // Add more path mappings as needed
     return "Dashboard";
@@ -22,10 +22,10 @@ export function SiteHeader() {
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
         <SidebarTrigger className="-ml-1" />
         <Separator
-          orientation="vertical"
           className="mx-2 data-[orientation=vertical]:h-4"
+          orientation="vertical"
         />
-        <h1 className="text-base font-medium">{getPageTitle(pathname)}</h1>
+        <h1 className="font-medium text-base">{getPageTitle(pathname)}</h1>
       </div>
     </header>
   );

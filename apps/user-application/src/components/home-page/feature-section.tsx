@@ -1,3 +1,5 @@
+import { BarChart3, Brain, Globe, Link, Shield, Zap } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -5,8 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Link, Globe, Shield, BarChart3, Zap, Brain } from "lucide-react";
 
 const features = [
   {
@@ -55,14 +55,14 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section className="py-20 sm:py-28 bg-muted/30">
+    <section className="bg-muted/30 py-20 sm:py-28">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <Badge variant="outline" className="mb-4 px-3 py-1">
+        <div className="mx-auto mb-16 max-w-3xl text-center">
+          <Badge className="mb-4 px-3 py-1" variant="outline">
             Features
           </Badge>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
+          <h2 className="mb-4 font-bold text-3xl tracking-tight sm:text-4xl">
             Everything you need to protect your revenue
           </h2>
           <p className="text-lg text-muted-foreground">
@@ -72,20 +72,20 @@ export function FeaturesSection() {
         </div>
 
         {/* Features grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
               <Card
+                className="group relative border-0 bg-card/50 backdrop-blur transition-all duration-300 hover:shadow-lg"
                 key={index}
-                className="relative group hover:shadow-lg transition-all duration-300 border-0 bg-card/50 backdrop-blur"
               >
                 <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="p-2 rounded-lg bg-primary/10 w-fit">
+                  <div className="mb-2 flex items-center justify-between">
+                    <div className="w-fit rounded-lg bg-primary/10 p-2">
                       <Icon className="h-5 w-5 text-primary" />
                     </div>
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge className="text-xs" variant="secondary">
                       {feature.badge}
                     </Badge>
                   </div>

@@ -1,6 +1,8 @@
+import type { DestinationsSchemaType } from "@repo/data-ops/zod-schema/links";
+import { useMutation } from "@tanstack/react-query";
+import { Globe } from "lucide-react";
 import { useState } from "react";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,11 +13,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { DestinationsSchemaType } from "@repo/data-ops/zod-schema/links";
-import { Globe } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { queryClient, trpc } from "@/router";
-import { toast } from "sonner";
 
 interface GeoRoutingToggleProps {
   destinations: DestinationsSchemaType;
@@ -45,14 +45,14 @@ export function GeoRoutingToggle({
       onError: () => {
         toast.error("Failed to update geo routing");
       },
-    }),
+    })
   );
 
   const handleUpdateDestination = (
-    updatedDestinations: DestinationsSchemaType,
+    updatedDestinations: DestinationsSchemaType
   ) => {
     updateDestinationMutation.mutate({
-      linkId: linkId,
+      linkId,
       destinations: updatedDestinations,
     });
   };
@@ -86,11 +86,11 @@ export function GeoRoutingToggle({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <Label className="text-sm font-medium flex items-center gap-2">
-              <Globe className="w-4 h-4" />
+            <Label className="flex items-center gap-2 font-medium text-sm">
+              <Globe className="h-4 w-4" />
               Geo Routing
             </Label>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Route users to different destinations based on their location
             </p>
           </div>
@@ -98,7 +98,7 @@ export function GeoRoutingToggle({
         </div>
       </div>
 
-      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+      <AlertDialog onOpenChange={setShowConfirmDialog} open={showConfirmDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Disable Geo Routing?</AlertDialogTitle>

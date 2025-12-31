@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Globe } from "lucide-react";
 import {
   ComposableMap,
@@ -6,6 +5,7 @@ import {
   Geography,
   Marker,
 } from "react-simple-maps";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGeoClickStore } from "@/hooks/geo-clicks-store";
 import { groupClicksByMile } from "@/lib/utils";
 
@@ -15,7 +15,7 @@ export function ActiveAreasMap() {
   const groupedClicks = groupClicksByMile(clicks);
 
   return (
-    <Card className="lg:col-span-1 hover:shadow-md transition-all duration-200">
+    <Card className="transition-all duration-200 hover:shadow-md lg:col-span-1">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Globe className="h-5 w-5" />
@@ -23,24 +23,24 @@ export function ActiveAreasMap() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-96 bg-muted/30 rounded-lg border border-border relative overflow-hidden">
+        <div className="relative h-96 overflow-hidden rounded-lg border border-border bg-muted/30">
           <ComposableMap
+            className="h-full w-full"
+            height={400}
             projection="geoMercator"
             projectionConfig={{
               scale: 100,
               center: [0, 20],
             }}
             width={800}
-            height={400}
-            className="w-full h-full"
           >
             <Geographies geography="https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json">
               {({ geographies }) =>
                 geographies.map((geo) => (
                   <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
                     fill="#d1d5db"
+                    geography={geo}
+                    key={geo.rsmKey}
                     stroke="#9ca3af"
                     strokeWidth={0.2}
                     style={{
@@ -59,57 +59,57 @@ export function ActiveAreasMap() {
 
               return (
                 <Marker
-                  key={index}
                   coordinates={[group.longitude, group.latitude]}
+                  key={index}
                 >
                   <g>
                     <circle
-                      r={maxRadius}
                       fill="none"
+                      opacity="0"
+                      r={maxRadius}
                       stroke="#ef4444"
                       strokeWidth="1"
-                      opacity="0"
                     >
                       <animate
                         attributeName="r"
-                        from={baseRadius}
-                        to={maxRadius}
                         dur="1.5s"
+                        from={baseRadius}
                         repeatCount="indefinite"
+                        to={maxRadius}
                       />
                       <animate
                         attributeName="opacity"
-                        from="0.8"
-                        to="0"
                         dur="1.5s"
+                        from="0.8"
                         repeatCount="indefinite"
+                        to="0"
                       />
                     </circle>
                     <circle
-                      r={secondMaxRadius}
                       fill="none"
+                      opacity="0"
+                      r={secondMaxRadius}
                       stroke="#ef4444"
                       strokeWidth="0.5"
-                      opacity="0"
                     >
                       <animate
                         attributeName="r"
-                        from={baseRadius}
-                        to={secondMaxRadius}
-                        dur="1.5s"
                         begin="0.5s"
+                        dur="1.5s"
+                        from={baseRadius}
                         repeatCount="indefinite"
+                        to={secondMaxRadius}
                       />
                       <animate
                         attributeName="opacity"
-                        from="0.6"
-                        to="0"
-                        dur="1.5s"
                         begin="0.5s"
+                        dur="1.5s"
+                        from="0.6"
                         repeatCount="indefinite"
+                        to="0"
                       />
                     </circle>
-                    <circle r={baseRadius} fill="#ef4444" />
+                    <circle fill="#ef4444" r={baseRadius} />
                   </g>
                 </Marker>
               );
@@ -117,9 +117,9 @@ export function ActiveAreasMap() {
           </ComposableMap>
 
           {/* Legend */}
-          <div className="absolute bottom-2 left-2 text-xs text-muted-foreground">
+          <div className="absolute bottom-2 left-2 text-muted-foreground text-xs">
             <div className="flex items-center gap-1">
-              <div className="w-2 h-2 rounded-full bg-red-500"></div>
+              <div className="h-2 w-2 rounded-full bg-red-500" />
               <span>Active Users</span>
             </div>
           </div>

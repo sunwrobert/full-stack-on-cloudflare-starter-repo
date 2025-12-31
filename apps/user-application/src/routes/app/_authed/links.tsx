@@ -1,3 +1,4 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   createColumnHelper,
@@ -6,6 +7,14 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  Copy,
+} from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -15,29 +24,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Copy,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from "lucide-react";
-import { toast } from "sonner";
 import { trpc } from "@/router";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/app/_authed/links")({
   component: RouteComponent,
   loader: async ({ context }) => {
     await context.queryClient.prefetchQuery(
-      context.trpc.links.linkList.queryOptions({}),
+      context.trpc.links.linkList.queryOptions({})
     );
   },
 });
 
 function RouteComponent() {
   const { data: links } = useSuspenseQuery(
-    trpc.links.linkList.queryOptions({}),
+    trpc.links.linkList.queryOptions({})
   );
   const nav = useNavigate();
 
@@ -60,16 +60,16 @@ function RouteComponent() {
       header: "Link",
       cell: (info) => (
         <div className="flex items-center gap-2">
-          <span className="truncate max-w-[200px]">{`https://${import.meta.env.VITE_BACKEND_HOST}/${info.getValue()}`}</span>
+          <span className="max-w-[200px] truncate">{`https://${import.meta.env.VITE_BACKEND_HOST}/${info.getValue()}`}</span>
           <Button
-            variant="ghost"
-            size="sm"
             onClick={(e) => {
               e.stopPropagation();
               copyToClipboard(
-                `https://${import.meta.env.VITE_BACKEND_HOST}/${info.getValue()}`,
+                `https://${import.meta.env.VITE_BACKEND_HOST}/${info.getValue()}`
               );
             }}
+            size="sm"
+            variant="ghost"
           >
             <Copy className="h-4 w-4" />
           </Button>
@@ -108,7 +108,7 @@ function RouteComponent() {
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext(),
+                          header.getContext()
                         )}
                   </TableHead>
                 ))}
@@ -119,6 +119,8 @@ function RouteComponent() {
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
+                  data-state={row.getIsSelected() && "selected"}
+                  key={row.id}
                   onClick={() => {
                     nav({
                       to: "/app/link/$id",
@@ -127,14 +129,12 @@ function RouteComponent() {
                       },
                     });
                   }}
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}
@@ -143,8 +143,8 @@ function RouteComponent() {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
                   className="h-24 text-center"
+                  colSpan={columns.length}
                 >
                   No results.
                 </TableCell>
@@ -154,7 +154,7 @@ function RouteComponent() {
         </Table>
       </div>
       <div className="flex items-center justify-between px-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
+        <div className="flex-1 text-muted-foreground text-sm">
           Showing{" "}
           {table.getState().pagination.pageIndex *
             table.getState().pagination.pageSize +
@@ -163,52 +163,52 @@ function RouteComponent() {
           {Math.min(
             (table.getState().pagination.pageIndex + 1) *
               table.getState().pagination.pageSize,
-            table.getFilteredRowModel().rows.length,
+            table.getFilteredRowModel().rows.length
           )}{" "}
           of {table.getFilteredRowModel().rows.length} entries
         </div>
         <div className="flex items-center space-x-2">
           <Button
-            variant="outline"
-            size="sm"
+            disabled={!table.getCanPreviousPage()}
             onClick={() => {
               console.log("First page clicked");
               table.setPageIndex(0);
             }}
-            disabled={!table.getCanPreviousPage()}
+            size="sm"
+            variant="outline"
           >
             <ChevronsLeft className="h-4 w-4" />
           </Button>
           <Button
-            variant="outline"
-            size="sm"
+            disabled={!table.getCanPreviousPage()}
             onClick={() => {
               console.log("Previous page clicked");
               table.previousPage();
             }}
-            disabled={!table.getCanPreviousPage()}
+            size="sm"
+            variant="outline"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <Button
-            variant="outline"
-            size="sm"
+            disabled={!table.getCanNextPage()}
             onClick={() => {
               console.log("Next page clicked");
               table.nextPage();
             }}
-            disabled={!table.getCanNextPage()}
+            size="sm"
+            variant="outline"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
           <Button
-            variant="outline"
-            size="sm"
+            disabled={!table.getCanNextPage()}
             onClick={() => {
               console.log("Last page clicked");
               table.setPageIndex(table.getPageCount() - 1);
             }}
-            disabled={!table.getCanNextPage()}
+            size="sm"
+            variant="outline"
           >
             <ChevronsRight className="h-4 w-4" />
           </Button>

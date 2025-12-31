@@ -1,20 +1,20 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Globe, ChevronDown } from "lucide-react";
+import { ChevronDown, Globe } from "lucide-react";
+import { useMemo, useState } from "react";
 import {
   ComposableMap,
   Geographies,
   Geography,
   Marker,
 } from "react-simple-maps";
-import { useState, useMemo } from "react";
 import countries from "world-countries";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useGeoClickStore } from "@/hooks/geo-clicks-store";
 import { groupClicksByMile } from "@/lib/utils";
 
@@ -82,7 +82,7 @@ export function ActiveRegionMap() {
   }, [clicks, selectedRegion, countryToRegion]);
 
   return (
-    <Card className="lg:col-span-1 hover:shadow-md transition-all duration-200 ">
+    <Card className="transition-all duration-200 hover:shadow-md lg:col-span-1">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -91,9 +91,9 @@ export function ActiveRegionMap() {
           </CardTitle>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button size="sm" variant="outline">
                 {currentRegion.name}
-                <ChevronDown className="h-4 w-4 ml-1" />
+                <ChevronDown className="ml-1 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -110,24 +110,24 @@ export function ActiveRegionMap() {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-96 bg-muted/30 rounded-lg border border-border relative overflow-hidden">
+        <div className="relative h-96 overflow-hidden rounded-lg border border-border bg-muted/30">
           <ComposableMap
+            className="h-full w-full"
+            height={400}
             projection="geoMercator"
             projectionConfig={{
               scale: currentRegion.projection.scale,
               center: currentRegion.projection.center,
             }}
             width={800}
-            height={400}
-            className="w-full h-full"
           >
             <Geographies geography="https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json">
               {({ geographies }) =>
                 geographies.map((geo) => (
                   <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
                     fill="#d1d5db"
+                    geography={geo}
+                    key={geo.rsmKey}
                     stroke="#9ca3af"
                     strokeWidth={0.2}
                     style={{
@@ -146,57 +146,57 @@ export function ActiveRegionMap() {
 
               return (
                 <Marker
-                  key={index}
                   coordinates={[group.longitude, group.latitude]}
+                  key={index}
                 >
                   <g>
                     <circle
-                      r={maxRadius}
                       fill="none"
+                      opacity="0"
+                      r={maxRadius}
                       stroke="#ef4444"
                       strokeWidth="1"
-                      opacity="0"
                     >
                       <animate
                         attributeName="r"
-                        from={baseRadius}
-                        to={maxRadius}
                         dur="1.5s"
+                        from={baseRadius}
                         repeatCount="indefinite"
+                        to={maxRadius}
                       />
                       <animate
                         attributeName="opacity"
-                        from="0.8"
-                        to="0"
                         dur="1.5s"
+                        from="0.8"
                         repeatCount="indefinite"
+                        to="0"
                       />
                     </circle>
                     <circle
-                      r={secondMaxRadius}
                       fill="none"
+                      opacity="0"
+                      r={secondMaxRadius}
                       stroke="#ef4444"
                       strokeWidth="0.5"
-                      opacity="0"
                     >
                       <animate
                         attributeName="r"
-                        from={baseRadius}
-                        to={secondMaxRadius}
-                        dur="1.5s"
                         begin="0.5s"
+                        dur="1.5s"
+                        from={baseRadius}
                         repeatCount="indefinite"
+                        to={secondMaxRadius}
                       />
                       <animate
                         attributeName="opacity"
-                        from="0.6"
-                        to="0"
-                        dur="1.5s"
                         begin="0.5s"
+                        dur="1.5s"
+                        from="0.6"
                         repeatCount="indefinite"
+                        to="0"
                       />
                     </circle>
-                    <circle r={baseRadius} fill="#ef4444" />
+                    <circle fill="#ef4444" r={baseRadius} />
                   </g>
                 </Marker>
               );
@@ -204,9 +204,9 @@ export function ActiveRegionMap() {
           </ComposableMap>
 
           {/* Legend */}
-          <div className="absolute bottom-2 left-2 text-xs text-muted-foreground">
+          <div className="absolute bottom-2 left-2 text-muted-foreground text-xs">
             <div className="flex items-center gap-1">
-              <div className="w-2 h-2 rounded-full bg-red-500"></div>
+              <div className="h-2 w-2 rounded-full bg-red-500" />
               <span>Active Users</span>
             </div>
           </div>
