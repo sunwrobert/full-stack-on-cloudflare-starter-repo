@@ -9,8 +9,17 @@ import {
 
 export const App = new Hono<{ Bindings: Env }>();
 
-App.get("/link-click/:accountId", async (c) => {
+App.get("/click-socket", async (c) => {
+  const upgradeHeader = c.req.header("upgrade");
+  if (upgradeHeader !== "websocket") {
+    return c.text("Upgrade header required", 426);
+  }
+
   const accountId = c.req.param("accountId");
+  if (!accountId) {
+    return c.text("Account ID is required", 404);
+  }
+
   const doId = c.env.LINK_CLICK_TRACKER.idFromName(accountId);
   const stub = c.env.LINK_CLICK_TRACKER.get(doId);
   return await stub.fetch(c.req.raw);

@@ -38,17 +38,14 @@ export class LinkClickTracker extends DurableObject {
   }
 
   async fetch(_: Request) {
-    const query = `
-			SELECT *
-			FROM geo_link_clicks
-			limit 100
-		`;
+    // biome-ignore lint/correctness/noUndeclaredVariables: worker env
+    const webSocketPair = new WebSocketPair();
+    const [client, server] = Object.values(webSocketPair);
+    this.ctx.acceptWebSocket(server);
 
-    const cursor = this.sql.exec(query);
-    const results = cursor.toArray();
-
-    return Response.json({
-      clicks: results,
+    return new Response(null, {
+      status: 101,
+      webSocket: client,
     });
   }
 }
